@@ -1,0 +1,25 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import r2_score
+
+data=pd.read_csv('sam.csv')
+x=np.array(data.iloc[:,2:4].values)
+y=data['Purchased']
+
+x_train,x_test,y_train,y_test=train_test_split(x,y,random_state=100)
+
+def knc(age,sal):
+    knn=KNeighborsClassifier(n_neighbors=3)
+    knn.fit(x,y)
+    y_pred=knn.predict(x_test)
+    print(r2_score(y_test,y_pred))
+    print(knn.predict([[age,sal]]))
+    
+if __name__=='__main__':
+    age=int(input("enter the age"))
+    sal=int(input("enter the salary"))
+    knc(age,sal)
+    

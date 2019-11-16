@@ -1,0 +1,85 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import classification_report,confusion_matrix
+from sklearn.model_selection import cross_val_score
+from sklearn.neighbors import KNeighborsClassifier
+from matplotlib import style
+style.use('fivethirtyeight')
+
+data=pd.read_csv('heart.csv')
+x=np.array(data.iloc[:,0:12].values)
+y=data['target']
+
+x_train,x_test,y_train,y_test=train_test_split(x,y,random_state=4)
+
+def nb():
+    nba=MultinomialNB()
+    nba.fit(x_train,y_train)
+    y_pred=nba.predict(x_test)
+    cm=confusion_matrix(y_test,y_pred)
+    cr=classification_report(y_test,y_pred)
+    print(cross_val_score(nba,x,y,scoring='accuracy',cv=3).mean())
+    print(cm)
+    print(cr)
+    
+def knn():
+    kna=KNeighborsClassifier(n_neighbors=4)
+    kna.fit(x_train,y_train)
+    y_pred=kna.predict(x_test)
+    cm=confusion_matrix(y_test,y_pred)
+    cr=classification_report(y_test,y_pred)
+    print(cross_val_score(kna,x,y,scoring='accuracy',cv=3).mean())
+    print(cm)
+    print(cr)
+def error():
+    error_rate=[]
+    for i in range(1,50):
+        knn=KNeighborsClassifier(n_neighbors=i)
+        knn.fit(x,y)
+        y_pre_i=knn.predict(x_test)
+        error_rate.append(np.mean(y_pre_i != y_test))
+    print(error_rate)
+    plt.figure(figsize=(10,6))
+    plt.plot(range(1,50),error_rate,color='blue',linestyle='dashed',marker='o',markersize=10,markerfacecolor='red')
+    plt.title('error rate vs k value')
+    plt.xlabel('k value')
+    plt.ylabel('error_rate')
+    plt.show   
+    
+nb()
+knn() 
+#error()   
+
+#output
+
+runfile('F:/machine learnig/notes/supervised/regression/simple linear regression/smallex.py', wdir='F:/machine learnig/notes/supervised/regression/simple linear regression')
+0.7524752475247526
+[[19 14]
+ [ 4 39]]
+              precision    recall  f1-score   support
+
+           0       0.83      0.58      0.68        33
+           1       0.74      0.91      0.81        43
+
+    accuracy                           0.76        76
+   macro avg       0.78      0.74      0.75        76
+weighted avg       0.78      0.76      0.75        76
+
+0.6039603960396039
+[[23 10]
+ [17 26]]
+              precision    recall  f1-score   support
+
+           0       0.57      0.70      0.63        33
+           1       0.72      0.60      0.66        43
+
+    accuracy                           0.64        76
+   macro avg       0.65      0.65      0.64        76
+weighted avg       0.66      0.64      0.65        76
+
+#conclusion
+
+naive bayes works better than knn
