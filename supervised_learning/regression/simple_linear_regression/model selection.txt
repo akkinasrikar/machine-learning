@@ -1,0 +1,57 @@
+import numpy as np
+import pandas as pd
+from scipy import stats
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import r2_score
+from sklearn.model_selection import cross_val_score 
+
+
+dataset=pd.read_csv('salary.csv')
+x1=dataset.iloc[:,0:1].values
+y1=dataset.iloc[:,1:2].values
+x=np.array(x1,dtype=np.float64)
+y=np.array(y1,dtype=np.float64)
+xset=[]
+yset=[]
+for i in range(len(x)):
+    xset.append(float(x[i]))
+    yset.append(float(y[i]))
+slope,intercept,r_value,p_value,std_err=stats.linregress(xset,yset)
+plt.xlabel('expie')
+plt.ylabel('exp sal')
+plt.scatter(x,y,color='red')
+x_train,x_test,y_train,y_test=train_test_split(x,y,random_state=10)
+
+
+def knn():
+    n=int(input("enter the k value >>"))
+    kna=KNeighborsRegressor(n_neighbors=n)
+    kna.fit(x_train,y_train)
+    y_pred=kna.predict(x_test)
+    print(r2_score(y_test,y_pred))
+    print(kna.score(x_test,y_test))
+    print(cross_val_score(kna,x,y,cv=3).mean())
+    
+def lr():
+    slr=LinearRegression()
+    slr.fit(x_train,y_train)
+    y_pred=slr.predict(x_test)
+    print(r2_score(y_test,y_pred))
+    print(slr.score(x_test,y_test))
+    print(cross_val_score(slr,x,y,cv=3).mean())
+
+if __name__=='__main__':    
+    no=int(input("type number which one you want 1)slr 2)slr with knn >>"))
+    if no==2:
+        knn()
+    else:
+        lr()
+
+    
+    
+
+    
+

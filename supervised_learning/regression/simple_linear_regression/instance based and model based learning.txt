@@ -1,0 +1,58 @@
+import numpy as np
+import pandas as pd
+from scipy import stats
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+from sklearn.neighbors import KNeighborsRegressor
+
+dataset=pd.read_csv('salary.csv')
+x1=dataset.iloc[:,0:1].values
+y1=dataset.iloc[:,1:2].values
+x=np.array(x1)
+y=np.array(y1)
+xset=[]
+yset=[]
+for i in range(len(x)):
+    xset.append(float(x[i]))
+    yset.append(float(y[i]))
+slope,intercept,r_value,p_value,std_err=stats.linregress(xset,yset)
+plt.xlabel('expie')
+plt.ylabel('exp sal')
+plt.scatter(x,y,color='red')
+
+
+
+def knn(x_pre):
+    n=int(input("enter the k value >>"))
+    kna=KNeighborsRegressor(n_neighbors=n)
+    kna.fit(x,y)
+    y_pred=kna.predict(x_pre)
+    y_test=kna.predict(x)
+    print(f"prediction  in instance based learning {y_pred}")
+    plt.plot(x_pre,y_pred,color='blue',marker='*')
+    plt.plot(x,y_test)
+    plt.show
+    
+def lr(x_pre):
+    slr=LinearRegression()
+    slr.fit(x,y)
+    y_pred=slr.predict(x_pre)
+    y_test=slr.predict(x)
+    print(f"prediction in model based learning {y_pred}")
+    plt.plot(x_pre,y_pred,color='blue',marker='*')
+    plt.plot(x,y_test)
+    plt.show
+    
+if __name__=='__main__':    
+    no=int(input("type number which one you want 1)slr 2)slr with knn >>"))
+    x_pre=[[float(input("enter the experience >>"))]]
+    if no==2:
+        knn(x_pre)
+    else:
+        lr(x_pre)
+    
+    
+    
+
+    
+
