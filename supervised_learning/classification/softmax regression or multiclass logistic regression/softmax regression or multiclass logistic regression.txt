@@ -1,0 +1,73 @@
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report,confusion_matrix
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_digits
+import seaborn as sns
+sns.set_style('whitegrid')
+
+mnist=load_digits()
+x=np.array(mnist.images)
+y=np.array(mnist.target)
+n=int(input("enter the number btw 1 to 1500>>"))
+some_digit=np.array(x[n])
+plt.imshow(some_digit,cmap=plt.cm.gray_r,interpolation='nearest')
+plt.axis("off")
+plt.show
+print(f"expected output {y[n]}")
+
+
+nsamples=len(x)
+x=x.reshape((nsamples,-1))
+
+
+x_train,x_test,y_train,y_test=train_test_split(x,y,random_state=6)
+
+
+def softmax_regression():
+    multiclass_reg=LogisticRegression(multi_class='multinomial',solver="lbfgs")
+    multiclass_reg.fit(x_train,y_train)
+    y_pred=multiclass_reg.predict(x_test)
+    rel=multiclass_reg.predict([x[n]])
+    print(f"predicted output is {rel}")
+    print(confusion_matrix(y_test,y_pred))
+    print(classification_report(y_test,y_pred))
+   
+        
+softmax_regression()        
+        
+#output
+
+runfile('C:/Users/personal/Desktop/logistic_regression_from_scratch.py', wdir='C:/Users/personal/Desktop')
+
+enter the number btw 1 to 1500>>66
+expected output 6
+predicted output is [6]
+[[51  0  1  0  0  0  0  0  0  0]
+ [ 0 39  0  0  1  0  0  0  1  1]
+ [ 0  0 51  0  0  0  0  0  0  0]
+ [ 0  0  2 36  0  0  0  0  1  1]
+ [ 1  0  0  0 50  0  0  0  0  0]
+ [ 1  0  0  0  0 50  0  0  0  0]
+ [ 0  1  0  0  0  0 43  0  1  0]
+ [ 0  0  0  2  1  0  0 40  0  1]
+ [ 0  0  2  0  0  0  0  0 37  0]
+ [ 0  0  0  0  0  1  0  1  2 31]]
+              precision    recall  f1-score   support
+
+           0       0.96      0.98      0.97        52
+           1       0.97      0.93      0.95        42
+           2       0.91      1.00      0.95        51
+           3       0.95      0.90      0.92        40
+           4       0.96      0.98      0.97        51
+           5       0.98      0.98      0.98        51
+           6       1.00      0.96      0.98        45
+           7       0.98      0.91      0.94        44
+           8       0.88      0.95      0.91        39
+           9       0.91      0.89      0.90        35
+
+    accuracy                           0.95       450
+   macro avg       0.95      0.95      0.95       450
+weighted avg       0.95      0.95      0.95       450
