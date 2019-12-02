@@ -1,0 +1,72 @@
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split,GridSearchCV
+from sklearn.tree import DecisionTreeClassifier,export_graphviz
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report,confusion_matrix
+
+heart_data=pd.read_csv('heart.csv')
+
+x=heart_data.drop('target',axis=1)
+y=heart_data['target']
+
+#print(heart_data.info())
+#sns.heatmap(heart_data.isnull(),cbar=False,yticklabels=False,cmap='viridis')
+#sns.pairplot(heart_data,hue='target')
+
+x_train,x_test,y_train,y_test=train_test_split(x,y,random_state=4)
+
+def decision_tree():
+    dct=DecisionTreeClassifier()
+    dct.fit(x_train,y_train)
+    y_pred=dct.predict(x_test)
+    print(confusion_matrix(y_test,y_pred))
+    print(classification_report(y_test,y_pred))
+
+def param_grid():
+    paramgrid={
+               'min_samples_leaf':[1,2,3,4,5,6],
+               'criterion':['gini','entropy'],
+               'max_features':[1,2,3,4,9,7,8,11]}
+    grid_search=GridSearchCV(DecisionTreeClassifier(),paramgrid,verbose=3)
+    grid_search.fit(x_train,y_train)
+    print(grid_search.best_params_)
+    y_pred=grid_search.predict(x_test)
+    print(confusion_matrix(y_test,y_pred))
+    print(classification_report(y_test,y_pred))
+        
+
+print("grid_search")
+param_grid()
+print('decision tree')    
+decision_tree()
+
+
+#output
+
+score=0.760, total=   0.0s
+{'criterion': 'entropy', 'max_features': 11, 'min_samples_leaf': 5}
+[[23 10]
+ [10 33]]
+              precision    recall  f1-score   support
+
+           0       0.70      0.70      0.70        33
+           1       0.77      0.77      0.77        43
+
+    accuracy                           0.74        76
+   macro avg       0.73      0.73      0.73        76
+weighted avg       0.74      0.74      0.74        76
+
+decision tree
+[[22 11]
+ [ 7 36]]
+              precision    recall  f1-score   support
+
+           0       0.76      0.67      0.71        33
+           1       0.77      0.84      0.80        43
+
+    accuracy                           0.76        76
+   macro avg       0.76      0.75      0.75        76
+weighted avg       0.76      0.76      0.76        76
