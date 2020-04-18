@@ -1,0 +1,34 @@
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split,GridSearchCV
+from sklearn.metrics import classification_report,confusion_matrix,accuracy_score,r2_score
+from sklearn.datasets import load_wine
+from matplotlib import style
+style.use('fivethirtyeight')
+
+wine_data=load_wine()
+x=wine_data.data
+y=wine_data.target
+
+
+x_train,x_test,y_train,y_test=train_test_split(x,y,random_state=7)
+
+
+
+def adaboost():
+    ada_clf=AdaBoostClassifier(DecisionTreeClassifier(max_depth=1),
+                               n_estimators=900,
+                               algorithm="SAMME.R",
+                               learning_rate=0.5)
+    ada_clf.fit(x_train,y_train)
+    y_pred=ada_clf.predict(x_test)
+    print(confusion_matrix(y_test,y_pred))
+    print(classification_report(y_test,y_pred))
+
+adaboost()
+
+
